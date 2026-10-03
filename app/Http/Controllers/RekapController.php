@@ -43,7 +43,7 @@ class RekapController extends Controller
             'solar_jerigen' => $l->solar_jerigen !== null ? (float) $l->solar_jerigen : null,
             'solar_liter' => (float) $l->solar_liter,
             'keterangan' => $l->keterangan,
-            'foto_lokasi' => $l->foto_lokasi ? asset($l->foto_lokasi) : null,
+            'foto_lokasi' => $l->foto_lokasi ? '/'.ltrim($l->foto_lokasi, '/') : null,
         ])->all();
 
         $ringkasan = [

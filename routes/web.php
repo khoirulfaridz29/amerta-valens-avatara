@@ -9,6 +9,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\KasController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\OperatorController;
+use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\ProyekController;
 use App\Http\Controllers\RekapController;
 use App\Http\Controllers\ServiceController;
@@ -68,6 +69,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/operator', [OperatorController::class, 'index'])->name('operator.index');
         Route::post('/operator', [OperatorController::class, 'store'])->name('operator.store');
         Route::put('/operator/{user}', [OperatorController::class, 'update'])->name('operator.update');
+
+        Route::get('/pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
+        Route::put('/pengaturan', [PengaturanController::class, 'update'])->name('pengaturan.update');
 
         Route::get('/export/kas.csv', [ExportController::class, 'kas'])->name('export.kas');
         Route::get('/export/laporan.csv', [ExportController::class, 'laporan'])->name('export.laporan');

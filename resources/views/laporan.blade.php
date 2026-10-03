@@ -37,7 +37,7 @@
         @endunless
 
         @if (! $isBos && $tab === 'lapor')
-            <form method="POST" action="{{ route('laporan.store') }}" enctype="multipart/form-data" class="space-y-4 rounded-3xl bg-white p-6 shadow-soft ring-1 ring-slate-100 sm:p-8">
+            <form id="lap-form" method="POST" action="{{ route('laporan.store') }}" enctype="multipart/form-data" class="space-y-4 rounded-3xl bg-white p-6 shadow-soft ring-1 ring-slate-100 sm:p-8">
                 @csrf
                 @if ($errors->any())
                     <div class="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">{{ $errors->first() }}</div>
@@ -97,8 +97,8 @@
                     <textarea id="lap-ket" name="keterangan" rows="2" placeholder="cth. Hujan siang, pekerjaan dilanjutkan sore"
                               class="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 text-base focus:border-mandau-blue focus:bg-white focus:outline-none">{{ old('keterangan') }}</textarea>
                 </div>
-                <button type="submit" class="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-mandau-blue text-base font-bold text-white shadow-lg shadow-blue-500/30 transition hover:bg-mandau-blue-hover active:scale-[0.98]">
-                    <x-icon name="send" class="h-5 w-5" /> Kirim Laporan Harian
+                <button type="submit" id="lap-submit" class="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-mandau-blue text-base font-bold text-white shadow-lg shadow-blue-500/30 transition hover:bg-mandau-blue-hover active:scale-[0.98] disabled:opacity-70">
+                    <x-icon name="send" class="h-5 w-5" /> <span id="lap-submit-text">Kirim Laporan Harian</span>
                 </button>
             </form>
         @endif
@@ -173,6 +173,15 @@
                 document.getElementById('liter').textContent = (j * 35).toLocaleString('id-ID');
             }
             perbaruiLiter();
+
+            var lapForm = document.getElementById('lap-form');
+            if (lapForm) {
+                lapForm.addEventListener('submit', function () {
+                    var btn = document.getElementById('lap-submit');
+                    btn.disabled = true;
+                    document.getElementById('lap-submit-text').textContent = 'Mengirim…';
+                });
+            }
         </script>
     @endunless
 </x-app-layout>

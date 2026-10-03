@@ -18,7 +18,7 @@
 
         {{-- Ringkasan --}}
         <div class="grid grid-cols-3 gap-3 sm:gap-4">
-            <div class="rounded-3xl bg-gradient-to-br from-[#1E429F] to-[#0B1E4B] p-4 text-white shadow-float sm:p-5">
+            <div class="rounded-3xl bg-mandau-blue p-4 text-white shadow-float sm:p-5">
                 <p class="text-xs font-bold uppercase tracking-wider text-blue-200">Laporan</p>
                 <p class="font-num mt-2 text-xl font-bold sm:text-2xl">{{ $ringkasan['laporan'] }}</p>
             </div>

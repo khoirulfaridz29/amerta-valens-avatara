@@ -28,7 +28,7 @@
         </div>
 
         <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-            <div class="col-span-2 rounded-3xl bg-gradient-to-br from-[#1E429F] to-[#0B1E4B] p-5 text-white shadow-float sm:p-6">
+            <div class="col-span-2 rounded-3xl bg-mandau-blue p-5 text-white shadow-float sm:p-6">
                 <div class="flex items-center justify-between">
                     <p class="text-xs font-bold uppercase tracking-wider text-blue-200">Saldo Kas Saat Ini</p>
                     <x-icon name="wallet" class="h-5 w-5 text-blue-200" />

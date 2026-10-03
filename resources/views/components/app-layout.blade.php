@@ -13,6 +13,7 @@
         ['route' => 'service.index', 'label' => 'Riwayat Service', 'icon' => 'fuel', 'tid' => 'nav-service-link'],
         ['route' => 'laporan.index', 'label' => 'Laporan Harian', 'icon' => 'file', 'tid' => 'nav-reports-link'],
         ['route' => 'operator.index', 'label' => 'Operator', 'icon' => 'users', 'tid' => 'nav-operators-link'],
+        ['route' => 'pengaturan.index', 'label' => 'Pengaturan', 'icon' => 'user', 'tid' => 'nav-settings-link'],
     ];
     $opNav = [
         ['route' => 'laporan.index', 'label' => 'Lapor Harian', 'icon' => 'file', 'tid' => 'nav-reports-link'],
@@ -120,12 +121,6 @@
     <main class="pb-28 md:pb-0 md:pl-64">
         <div class="p-4 md:p-6">
             <div class="mx-auto w-full max-w-6xl md:rounded-[28px] md:bg-white md:shadow-float md:ring-1 md:ring-white/60 md:[padding:2rem]">
-                @if (session('status'))
-                    <div class="mb-4 rounded-2xl border border-blue-100 bg-[#EFF4FF] px-4 py-3 text-sm text-slate-700">{{ session('status') }}</div>
-                @endif
-                @if (session('error'))
-                    <div class="mb-4 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">{{ session('error') }}</div>
-                @endif
                 {{ $slot }}
             </div>
         </div>
@@ -171,5 +166,16 @@
     </script>
 
     <x-alert-modal />
+
+    @if (session('status') || session('error'))
+        <script>
+            window.addEventListener('load', function () {
+                window.avaAlert({
+                    title: @json(session('error') ? 'Gagal' : 'Berhasil'),
+                    message: @json(session('error') ?: session('status')),
+                });
+            });
+        </script>
+    @endif
 </body>
 </html>

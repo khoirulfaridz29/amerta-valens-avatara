@@ -1,9 +1,5 @@
 @php
     $hero = asset('images/aset.webp');
-    $accounts = [
-        'admin' => ['label' => 'Admin', 'email' => 'admin@avatara.id', 'password' => 'admin123'],
-        'operator' => ['label' => 'Operator', 'email' => 'operator@avatara.id', 'password' => 'operator123'],
-    ];
     $lines = ['Catat semua aktivitas', 'arus kas', 'dan posisi alat'];
     $ticker = [
         'EX-01 CAT 320 — Beroperasi',
@@ -94,16 +90,7 @@
                         <div class="mt-4 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">{{ $errors->first() }}</div>
                     @endif
 
-                    <div class="mt-6 grid grid-cols-2 gap-2" role="group" aria-label="Isi cepat akun demo">
-                        @foreach ($accounts as $key => $a)
-                            <button type="button" data-email="{{ $a['email'] }}" data-password="{{ $a['password'] }}"
-                                    class="role-preset h-11 rounded-full border border-slate-200 bg-slate-50 text-sm font-bold text-slate-600 transition hover:border-mandau-blue/40 hover:text-mandau-blue">
-                                {{ $a['label'] }}
-                            </button>
-                        @endforeach
-                    </div>
-
-                    <form method="POST" action="{{ route('login') }}" class="mt-5 space-y-4" novalidate>
+            <form method="POST" action="{{ route('login') }}" class="mt-6 space-y-4" novalidate>
                         @csrf
                         <div class="space-y-1.5">
                             <label for="email" class="text-sm font-bold text-slate-700">Email</label>
@@ -141,18 +128,23 @@
                         <span class="h-px flex-1 bg-slate-200"></span>
                     </div>
 
-                    <button type="button"
-                            onclick="avaAlert({ title: 'Login Google', message: 'Fitur login dengan Google belum tersedia. Sementara silakan masuk memakai email dan password.', cancelText: 'Tutup', confirmText: 'Mengerti' })"
-                            class="flex h-12 w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-white text-base font-bold text-slate-700 transition hover:border-mandau-blue hover:text-mandau-blue">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1Z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84Z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1A11 11 0 0 0 2.18 7.06l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38Z"/></svg>
-                        Masuk dengan Google
-                    </button>
+                    @if (config('services.google.client_id'))
+                        <a href="{{ route('auth.google') }}"
+                           class="flex h-12 w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-white text-base font-bold text-slate-700 transition hover:border-mandau-blue hover:text-mandau-blue">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1Z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84Z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1A11 11 0 0 0 2.18 7.06l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38Z"/></svg>
+                            Masuk dengan Google
+                        </a>
+                    @else
+                        <button type="button"
+                                onclick="avaAlert({ title: 'Login Google', message: 'Fitur login dengan Google belum tersedia. Sementara silakan masuk memakai email dan password.', cancelText: 'Tutup', confirmText: 'Mengerti' })"
+                                class="flex h-12 w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-white text-base font-bold text-slate-700 transition hover:border-mandau-blue hover:text-mandau-blue">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1Z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84Z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1A11 11 0 0 0 2.18 7.06l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38Z"/></svg>
+                            Masuk dengan Google
+                        </button>
+                    @endif
 
-                    <div class="mt-5 rounded-2xl border border-blue-100 bg-[#EFF4FF] px-4 py-3 text-xs leading-relaxed text-slate-600">
-                        <span class="font-bold text-mandau-blue-deep">Akun demo:</span> admin@avatara.id / admin123 · operator@avatara.id / operator123
-                    </div>
-                </div>
-            </div>
+        </div>
+    </div>
         </section>
     </div>
 
@@ -166,17 +158,7 @@
             if (toLogin) toLogin.addEventListener('click', goForm);
             if (toHero) toHero.addEventListener('click', goHero);
 
-            document.querySelectorAll('.role-preset').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    document.getElementById('email').value = btn.dataset.email;
-                    document.getElementById('password').value = btn.dataset.password;
-                    document.querySelectorAll('.role-preset').forEach(function (b) {
-                        b.className = 'role-preset h-11 rounded-full border border-slate-200 bg-slate-50 text-sm font-bold text-slate-600 transition hover:border-mandau-blue/40 hover:text-mandau-blue';
-                    });
-                    btn.className = 'role-preset h-11 rounded-full border border-mandau-blue bg-mandau-blue text-sm font-bold text-white shadow-md shadow-blue-500/25 transition';
-                });
-            });
-            document.getElementById('toggle-pass').addEventListener('click', function () {
+        document.getElementById('toggle-pass').addEventListener('click', function () {
                 var p = document.getElementById('password');
                 var show = p.type === 'password';
                 p.type = show ? 'text' : 'password';

@@ -20,7 +20,7 @@
         @endphp
         <div class="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
             @foreach ($kpis as $k)
-                <div class="rounded-3xl p-5 sm:p-6 {{ $k['tone'] === 'navy' ? 'bg-gradient-to-br from-[#1E429F] to-[#0B1E4B] text-white shadow-float' : 'bg-white text-slate-900 shadow-soft ring-1 ring-slate-100' }}">
+                <div class="rounded-3xl p-5 sm:p-6 {{ $k['tone'] === 'navy' ? 'bg-mandau-blue text-white shadow-float' : 'bg-white text-slate-900 shadow-soft ring-1 ring-slate-100' }}">
                     <div class="flex items-center justify-between gap-2">
                         <p class="text-xs font-bold uppercase tracking-wider {{ $k['tone'] === 'navy' ? 'text-blue-200' : 'text-slate-500' }}">{{ $k['label'] }}</p>
                         <span class="grid h-9 w-9 place-items-center rounded-full {{ $k['tone'] === 'navy' ? 'bg-white/15 text-white' : 'bg-[#EFF4FF] text-mandau-blue' }}">
@@ -125,9 +125,9 @@
         <section class="grid gap-4 lg:grid-cols-2">
             <div>
                 <h2 class="mb-4 font-display text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">Laporan Terbaru</h2>
-                <div class="space-y-3">
+                <div class="flex snap-x gap-3 overflow-x-auto pb-1 no-scrollbar">
                     @forelse ($data['recent_laporan'] as $l)
-                        <div class="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-slate-100">
+                        <div class="flex w-[280px] min-w-[280px] shrink-0 snap-start items-center gap-3 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-slate-100">
                             <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#EFF4FF] text-mandau-blue">
                                 <x-icon name="clipboard" class="h-5 w-5" />
                             </span>
@@ -143,15 +143,15 @@
                             </div>
                         </div>
                     @empty
-                        <x-empty-state icon="clipboard" title="Belum ada laporan" sub="Laporan harian operator akan muncul di sini." />
+                        <div class="w-full"><x-empty-state icon="clipboard" title="Belum ada laporan" sub="Laporan harian operator akan muncul di sini." /></div>
                     @endforelse
                 </div>
             </div>
             <div>
                 <h2 class="mb-4 font-display text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">Kas Terbaru</h2>
-                <div class="space-y-3">
+                <div class="flex snap-x gap-3 overflow-x-auto pb-1 no-scrollbar">
                     @forelse ($data['recent_kas'] as $k)
-                        <div class="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-slate-100">
+                        <div class="flex w-[280px] min-w-[280px] shrink-0 snap-start items-center gap-3 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-slate-100">
                             <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full {{ $k['jenis'] === 'masuk' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500' }}">
                                 <x-icon :name="$k['jenis'] === 'masuk' ? 'arrowupright' : 'arrowdownright'" class="h-5 w-5" />
                             </span>
@@ -164,7 +164,7 @@
                             </p>
                         </div>
                     @empty
-                        <x-empty-state icon="wallet" title="Belum ada transaksi kas" sub="Catat kas masuk/keluar di Buku Kas." />
+                        <div class="w-full"><x-empty-state icon="wallet" title="Belum ada transaksi kas" sub="Catat kas masuk/keluar di Buku Kas." /></div>
                     @endforelse
                 </div>
             </div>

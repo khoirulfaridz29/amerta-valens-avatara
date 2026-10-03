@@ -29,3 +29,6 @@ Thumbs.db
 
 # Referensi design pihak lain (berisi kredensial) - jangan di-commit
 /docs/design ui/
+
+# Artefak deploy (dump DB dll) - jangan di-commit
+/deploy

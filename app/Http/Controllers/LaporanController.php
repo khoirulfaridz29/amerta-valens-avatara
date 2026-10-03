@@ -45,9 +45,9 @@ class LaporanController extends Controller
             'solar_jerigen' => $l->solar_jerigen !== null ? (float) $l->solar_jerigen : null,
             'solar_liter' => (float) $l->solar_liter,
             'keterangan' => $l->keterangan,
-            'foto_hm_awal' => $l->foto_hm_awal ? asset($l->foto_hm_awal) : null,
-            'foto_hm_akhir' => $l->foto_hm_akhir ? asset($l->foto_hm_akhir) : null,
-            'foto_lokasi' => $l->foto_lokasi ? asset($l->foto_lokasi) : null,
+            'foto_hm_awal' => $l->foto_hm_awal ? '/'.ltrim($l->foto_hm_awal, '/') : null,
+            'foto_hm_akhir' => $l->foto_hm_akhir ? '/'.ltrim($l->foto_hm_akhir, '/') : null,
+            'foto_lokasi' => $l->foto_lokasi ? '/'.ltrim($l->foto_lokasi, '/') : null,
         ])->all();
 
         return view('laporan', [
