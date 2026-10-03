@@ -9,12 +9,13 @@ class Service extends Model
 {
     protected $table = 'service';
 
-    protected $fillable = ['alat_id', 'tanggal', 'jenis', 'keterangan', 'biaya'];
+    protected $fillable = ['alat_id', 'tanggal', 'hm', 'jenis', 'keterangan', 'biaya'];
 
     protected function casts(): array
     {
         return [
             'tanggal' => 'date',
+            'hm' => 'decimal:2',
             'biaya' => 'decimal:2',
         ];
     }

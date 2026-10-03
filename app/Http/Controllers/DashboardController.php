@@ -9,11 +9,12 @@ use App\Models\Proyek;
 use App\Models\Service;
 use App\Models\TransaksiKas;
 use App\Support\Format;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index(): View|RedirectResponse
     {
         if (! request()->user()->isBos()) {
             return redirect()->route('laporan.index');

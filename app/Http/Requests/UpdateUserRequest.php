@@ -21,7 +21,7 @@ class UpdateUserRequest extends FormRequest
             'name' => ['sometimes', 'required', 'string', 'max:150'],
             'email' => ['sometimes', 'email', 'max:150', Rule::unique('users', 'email')->ignore($this->route('user'))],
             'phone' => ['nullable', 'string', 'max:30'],
-            'pin' => ['nullable', 'string', 'min:4', 'max:8'],
+            'password' => ['nullable', 'string', 'min:6'],
             'active' => ['nullable', 'boolean'],
         ];
     }

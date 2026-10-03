@@ -24,9 +24,9 @@ class LaporanRequest extends FormRequest
             'hm_akhir' => ['required', 'numeric', 'min:0'],
             'solar_jerigen' => ['nullable', 'numeric', 'min:0'],
             'keterangan' => ['nullable', 'string', 'max:1000'],
-            'foto_hm_awal' => ['nullable', 'image', 'max:5120'],
-            'foto_hm_akhir' => ['nullable', 'image', 'max:5120'],
-            'foto_lokasi' => ['nullable', 'image', 'max:5120'],
+            'foto_hm_awal' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'foto_hm_akhir' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'foto_lokasi' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ];
     }
 }

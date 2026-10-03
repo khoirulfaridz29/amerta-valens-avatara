@@ -20,7 +20,7 @@ class StoreUserRequest extends FormRequest
             'name' => ['required', 'string', 'max:150'],
             'email' => ['required', 'email', 'max:150', 'unique:users,email'],
             'phone' => ['nullable', 'string', 'max:30'],
-            'pin' => ['required', 'string', 'min:4', 'max:8'],
+            'password' => ['required', 'string', 'min:6'],
         ];
     }
 }

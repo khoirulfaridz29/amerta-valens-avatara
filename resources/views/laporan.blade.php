@@ -7,8 +7,6 @@
         $fAlat = request('alat_id', 'all');
         $fProyek = request('proyek_id', 'all');
         $fBulan = request('bulan', '');
-        $fStart = request('start', '');
-        $fEnd = request('end', '');
     @endphp
 
     <div class="space-y-6">
@@ -107,21 +105,17 @@
 
         @if ($isBos || $tab === 'riwayat')
             @if ($isBos)
-                <form method="GET" action="{{ route('laporan.index') }}" class="flex flex-wrap items-center gap-2 rounded-3xl bg-white p-4 shadow-soft ring-1 ring-slate-100" id="lap-filter">
-                    <select name="alat_id" onchange="document.getElementById('lap-filter').submit()" class="h-10 w-[150px] rounded-full border border-slate-200 bg-slate-50 px-3 text-sm text-slate-600 focus:border-mandau-blue focus:outline-none">
+                <form method="GET" action="{{ route('laporan.index') }}" class="grid grid-cols-3 gap-2 rounded-3xl bg-white p-4 shadow-soft ring-1 ring-slate-100" id="lap-filter">
+                    <select name="alat_id" onchange="document.getElementById('lap-filter').submit()" class="h-10 w-full rounded-full border border-slate-200 bg-slate-50 px-3 text-sm text-slate-600 focus:border-mandau-blue focus:outline-none">
                         <option value="all" @selected($fAlat === 'all')>Semua Alat</option>
                         @foreach ($alat as $a) <option value="{{ $a->id }}" @selected((string) $fAlat === (string) $a->id)>{{ $a->kode }}</option> @endforeach
                     </select>
-                    <select name="proyek_id" onchange="document.getElementById('lap-filter').submit()" class="h-10 w-[170px] rounded-full border border-slate-200 bg-slate-50 px-3 text-sm text-slate-600 focus:border-mandau-blue focus:outline-none">
+                    <select name="proyek_id" onchange="document.getElementById('lap-filter').submit()" class="h-10 w-full rounded-full border border-slate-200 bg-slate-50 px-3 text-sm text-slate-600 focus:border-mandau-blue focus:outline-none">
                         <option value="all" @selected($fProyek === 'all')>Semua Kontrak</option>
                         @foreach ($proyek as $p) <option value="{{ $p->id }}" @selected((string) $fProyek === (string) $p->id)>{{ $p->nama }}</option> @endforeach
                     </select>
                     <input type="month" name="bulan" value="{{ $fBulan }}" aria-label="Bulan" onchange="document.getElementById('lap-filter').submit()"
-                           class="h-10 rounded-full border border-slate-200 bg-slate-50 px-3 text-sm text-slate-600 focus:border-mandau-blue focus:outline-none">
-                    <input type="date" name="start" value="{{ $fStart }}" aria-label="Dari tanggal" onchange="document.getElementById('lap-filter').submit()"
-                           class="h-10 rounded-full border border-slate-200 bg-slate-50 px-3 text-sm text-slate-600 focus:border-mandau-blue focus:outline-none">
-                    <input type="date" name="end" value="{{ $fEnd }}" aria-label="Sampai tanggal" onchange="document.getElementById('lap-filter').submit()"
-                           class="h-10 rounded-full border border-slate-200 bg-slate-50 px-3 text-sm text-slate-600 focus:border-mandau-blue focus:outline-none">
+                           class="h-10 w-full rounded-full border border-slate-200 bg-slate-50 px-3 text-sm text-slate-600 focus:border-mandau-blue focus:outline-none">
                 </form>
             @endif
 

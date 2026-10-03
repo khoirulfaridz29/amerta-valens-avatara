@@ -8,14 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('service', function (Blueprint $table) {
+        Schema::create('bon', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('alat_id')->constrained('alat')->cascadeOnDelete();
+            $table->string('nomor')->unique();
+            $table->string('customer');
+            $table->foreignId('proyek_id')->nullable()->constrained('proyek')->nullOnDelete();
             $table->date('tanggal');
-            $table->decimal('hm', 10, 2)->nullable();
-            $table->string('jenis')->nullable();
+            $table->date('jatuh_tempo')->nullable();
+            $table->decimal('total', 15, 2);
             $table->text('keterangan')->nullable();
-            $table->decimal('biaya', 15, 2)->nullable();
             $table->timestamps();
 
             $table->index(['tanggal']);
@@ -24,6 +25,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('service');
+        Schema::dropIfExists('bon');
     }
 };

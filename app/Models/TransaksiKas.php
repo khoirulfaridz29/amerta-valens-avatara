@@ -11,7 +11,7 @@ class TransaksiKas extends Model
 {
     protected $table = 'transaksi_kas';
 
-    protected $fillable = ['proyek_id', 'tanggal', 'jenis', 'nominal', 'keterangan'];
+    protected $fillable = ['proyek_id', 'bon_id', 'tanggal', 'jenis', 'nominal', 'keterangan'];
 
     protected function casts(): array
     {
@@ -25,6 +25,16 @@ class TransaksiKas extends Model
     public function proyek(): BelongsTo
     {
         return $this->belongsTo(Proyek::class);
+    }
+
+    public function bon(): BelongsTo
+    {
+        return $this->belongsTo(Bon::class);
+    }
+
+    public function getBonNomorAttribute(): ?string
+    {
+        return $this->bon?->nomor;
     }
 
     protected function getProyekNamaAttribute(): ?string

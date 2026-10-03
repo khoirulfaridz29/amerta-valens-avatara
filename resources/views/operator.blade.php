@@ -52,7 +52,7 @@
         @endif
     </div>
 
-    <div id="operator-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div id="operator-modal" class="fixed inset-0 z-60 hidden items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" data-close></div>
         <div class="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-float">
             <h2 id="operator-modal-title" class="font-display text-xl font-extrabold">Tambah Akun Operator</h2>
@@ -75,10 +75,10 @@
                            class="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base focus:border-mandau-blue focus:bg-white focus:outline-none">
                 </div>
                 <div class="space-y-1.5">
-                    <label for="op-pin" id="op-pin-label" class="text-sm font-bold text-slate-700">PIN</label>
-                    <input id="op-pin" name="pin" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="4–8 digit angka"
-                           class="font-num h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base tracking-widest focus:border-mandau-blue focus:bg-white focus:outline-none">
-                    <p id="op-pin-hint" class="text-xs text-slate-400">4–8 digit, dipakai operator untuk masuk</p>
+                    <label for="op-password" id="op-password-label" class="text-sm font-bold text-slate-700">Password</label>
+                    <input id="op-password" name="password" type="password" autocomplete="new-password" placeholder="••••••••"
+                           class="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base focus:border-mandau-blue focus:bg-white focus:outline-none">
+                    <p id="op-password-hint" class="text-xs text-slate-400">Minimal 6 karakter, dipakai operator untuk masuk</p>
                 </div>
                 <button type="submit" class="h-12 w-full rounded-full bg-mandau-blue text-base font-bold text-white shadow-lg shadow-blue-500/30 transition hover:bg-mandau-blue-hover active:scale-[0.98]">Simpan Akun</button>
             </form>
@@ -92,7 +92,7 @@
             var title = document.getElementById('operator-modal-title');
             var method = document.getElementById('operator-method');
             var email = document.getElementById('op-email');
-            var pin = document.getElementById('op-pin');
+            var password = document.getElementById('op-password');
             var storeUrl = @json(route('operator.store'));
             var updateUrl = @json(route('operator.update', ['user' => 'ID']));
 
@@ -103,14 +103,14 @@
                 document.getElementById('op-phone').value = data.phone || '';
                 if (data.id) {
                     title.textContent = 'Ubah Operator'; form.action = updateUrl.replace('ID', data.id); method.value = 'PUT';
-                    email.disabled = true; pin.required = false;
-                    document.getElementById('op-pin-label').textContent = 'PIN baru (opsional)';
-                    document.getElementById('op-pin-hint').textContent = 'Kosongkan bila tidak diganti';
+                    email.disabled = true; password.required = false;
+                    document.getElementById('op-password-label').textContent = 'Password baru (opsional)';
+                    document.getElementById('op-password-hint').textContent = 'Kosongkan bila tidak diganti';
                 } else {
                     title.textContent = 'Tambah Akun Operator'; form.action = storeUrl; method.value = 'POST';
-                    email.disabled = false; pin.required = true;
-                    document.getElementById('op-pin-label').textContent = 'PIN';
-                    document.getElementById('op-pin-hint').textContent = '4–8 digit, dipakai operator untuk masuk';
+                    email.disabled = false; password.required = true;
+                    document.getElementById('op-password-label').textContent = 'Password';
+                    document.getElementById('op-password-hint').textContent = 'Minimal 6 karakter, dipakai operator untuk masuk';
                 }
                 modal.classList.remove('hidden'); modal.classList.add('flex');
             }

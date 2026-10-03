@@ -35,6 +35,24 @@
             @endforeach
         </div>
 
+        {{-- Pintasan cepat (mobile) --}}
+        <div class="grid grid-cols-4 gap-3 md:hidden">
+            @foreach ([
+                ['route' => 'proyek.index', 'label' => 'Kontrak', 'icon' => 'mappin'],
+                ['route' => 'bon.index', 'label' => 'Bon', 'icon' => 'clipboard'],
+                ['route' => 'service.index', 'label' => 'Service', 'icon' => 'fuel'],
+                ['route' => 'operator.index', 'label' => 'Operator', 'icon' => 'users'],
+            ] as $s)
+                <a href="{{ route($s['route']) }}" data-testid="quick-{{ $s['route'] }}"
+                   class="flex aspect-square flex-col items-center justify-center gap-2 rounded-3xl bg-white p-2 text-center shadow-soft ring-1 ring-slate-100 transition active:scale-95">
+                    <span class="grid h-10 w-10 place-items-center rounded-full bg-[#EFF4FF] text-mandau-blue">
+                        <x-icon :name="$s['icon']" class="h-5 w-5" />
+                    </span>
+                    <span class="text-[11px] font-bold text-slate-600">{{ $s['label'] }}</span>
+                </a>
+            @endforeach
+        </div>
+
         {{-- Posisi Alat --}}
         <section>
             <div class="mb-4 flex items-end justify-between gap-3">

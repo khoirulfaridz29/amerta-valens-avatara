@@ -32,7 +32,7 @@ class OperatorController extends Controller
             'name' => $request->validated('name'),
             'email' => $request->validated('email'),
             'phone' => $request->validated('phone'),
-            'pin' => Hash::make($request->validated('pin')),
+            'password' => Hash::make($request->validated('password')),
             'role' => Role::OPERATOR,
             'is_active' => true,
         ]);
@@ -54,8 +54,8 @@ class OperatorController extends Controller
         if ($request->has('active')) {
             $user->is_active = $request->boolean('active');
         }
-        if ($request->filled('pin')) {
-            $user->pin = Hash::make($request->validated('pin'));
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->validated('password'));
         }
         $user->save();
 

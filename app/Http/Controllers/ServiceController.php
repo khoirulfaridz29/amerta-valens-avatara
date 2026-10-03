@@ -18,6 +18,7 @@ class ServiceController extends Controller
             'alat_kode' => $s->alat?->kode,
             'alat_nama' => $s->alat?->nama,
             'tanggal' => $s->tanggal?->toDateString(),
+            'hm' => $s->hm !== null ? (float) $s->hm : null,
             'jenis' => $s->jenis,
             'keterangan' => $s->keterangan,
             'biaya' => $s->biaya !== null ? (float) $s->biaya : null,

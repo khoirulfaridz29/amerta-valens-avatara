@@ -31,12 +31,6 @@ class LaporanController extends Controller
             if ($bulan = $request->query('bulan')) {
                 $query->where('tanggal', 'like', $bulan.'%');
             }
-            if ($start = $request->query('start')) {
-                $query->whereDate('tanggal', '>=', $start);
-            }
-            if ($end = $request->query('end')) {
-                $query->whereDate('tanggal', '<=', $end);
-            }
         }
 
         $items = $query->latest('tanggal')->latest('id')->get()->map(fn (LaporanHarian $l) => [
@@ -92,8 +86,37 @@ class LaporanController extends Controller
         if (! is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
-        $name = Str::random(20).'.'.$file->getClientOriginalExtension();
-        $file->move($dir, $name);
+
+        $img = @imagecreatefromstring((string) file_get_contents($file->getRealPath()));
+
+        if ($img === false) {
+            $ext = strtolower($file->extension() ?: 'jpg');
+            if (! in_array($ext, ['jpg', 'jpeg', 'png', 'webp'], true)) {
+                $ext = 'jpg';
+            }
+            $name = Str::random(24).'.'.$ext;
+            $file->move($dir, $name);
+
+            return 'uploads/laporan/'.$name;
+        }
+
+        $width = imagesx($img);
+        $height = imagesy($img);
+        $max = 1600;
+
+        if ($width > $max || $height > $max) {
+            $ratio = min($max / $width, $max / $height);
+            $newWidth = max(1, (int) round($width * $ratio));
+            $newHeight = max(1, (int) round($height * $ratio));
+            $resized = imagecreatetruecolor($newWidth, $newHeight);
+            imagecopyresampled($resized, $img, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+            imagedestroy($img);
+            $img = $resized;
+        }
+
+        $name = Str::random(24).'.jpg';
+        imagejpeg($img, $dir.DIRECTORY_SEPARATOR.$name, 75);
+        imagedestroy($img);
 
         return 'uploads/laporan/'.$name;
     }

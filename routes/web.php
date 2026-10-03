@@ -3,12 +3,14 @@
 use App\Http\Controllers\AlatController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\BonController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\KasController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\ProyekController;
+use App\Http\Controllers\RekapController;
 use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -23,7 +25,7 @@ Route::get('/', function () {
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'show'])->name('login');
-    Route::post('/login', [LoginController::class, 'store']);
+    Route::post('/login', [LoginController::class, 'store'])->middleware('throttle:6,1');
 
     Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('auth.google');
     Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
@@ -39,6 +41,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::post('/laporan', [LaporanController::class, 'store'])->name('laporan.store');
 
+    Route::get('/rekap', [RekapController::class, 'index'])->name('rekap.index');
+
     Route::middleware('role:bos')->group(function () {
         Route::post('/alat', [AlatController::class, 'store'])->name('alat.store');
         Route::put('/alat/{alat}', [AlatController::class, 'update'])->name('alat.update');
@@ -50,6 +54,11 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/kas', [KasController::class, 'index'])->name('kas.index');
         Route::post('/kas', [KasController::class, 'store'])->name('kas.store');
+
+        Route::get('/bon', [BonController::class, 'index'])->name('bon.index');
+        Route::post('/bon', [BonController::class, 'store'])->name('bon.store');
+        Route::put('/bon/{bon}', [BonController::class, 'update'])->name('bon.update');
+        Route::delete('/bon/{bon}', [BonController::class, 'destroy'])->name('bon.destroy');
 
         Route::get('/service', [ServiceController::class, 'index'])->name('service.index');
         Route::post('/service', [ServiceController::class, 'store'])->name('service.store');

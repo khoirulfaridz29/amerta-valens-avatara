@@ -6,6 +6,7 @@ use App\Enums\AlatStatus;
 use App\Enums\KasJenis;
 use App\Enums\Role;
 use App\Models\Alat;
+use App\Models\Bon;
 use App\Models\LaporanHarian;
 use App\Models\Proyek;
 use App\Models\Service;
@@ -20,17 +21,17 @@ class DatabaseSeeder extends Seeder
     {
         User::updateOrCreate(
             ['email' => 'admin@avatara.id'],
-            ['name' => 'Admin Avatara', 'phone' => '0812-3456-7890', 'pin' => Hash::make('123456'), 'role' => Role::BOS, 'is_active' => true],
+            ['name' => 'Admin Avatara', 'phone' => '0812-3456-7890', 'password' => Hash::make('admin123'), 'role' => Role::BOS, 'is_active' => true],
         );
 
         $andi = User::updateOrCreate(
             ['email' => 'operator@avatara.id'],
-            ['name' => 'Andi Pratama', 'phone' => '0813-0000-1111', 'pin' => Hash::make('654321'), 'role' => Role::OPERATOR, 'is_active' => true],
+            ['name' => 'Andi Pratama', 'phone' => '0813-0000-1111', 'password' => Hash::make('operator123'), 'role' => Role::OPERATOR, 'is_active' => true],
         );
 
         $sugeng = User::updateOrCreate(
             ['email' => 'sugeng@avatara.id'],
-            ['name' => 'Sugeng Riyadi', 'phone' => '0853-2222-3333', 'pin' => Hash::make('111111'), 'role' => Role::OPERATOR, 'is_active' => true],
+            ['name' => 'Sugeng Riyadi', 'phone' => '0853-2222-3333', 'password' => Hash::make('sugeng123'), 'role' => Role::OPERATOR, 'is_active' => true],
         );
 
         $tol = Proyek::updateOrCreate(['nama' => 'Tol Balikpapan - Samarinda'], ['lokasi' => 'KM 34, Balikpapan']);
@@ -81,15 +82,32 @@ class DatabaseSeeder extends Seeder
         }
 
         $service = [
-            [20, $ex1, 'Servis berkala', 'Ganti oli mesin & filter', 2500000],
-            [14, $ex3, 'Perbaikan', 'Ganti roller & sprocket track', 8500000],
-            [6, $ex2, 'Servis berkala', 'Servis 500 HM, cek hidrolik', 3200000],
+            [20, $ex1, 1180, 'Servis berkala', 'Ganti oli mesin & filter', 2500000],
+            [14, $ex3, 965, 'Perbaikan', 'Ganti roller & sprocket track', 8500000],
+            [6, $ex2, 985, 'Servis berkala', 'Servis 500 HM, cek hidrolik', 3200000],
         ];
-        foreach ($service as [$ago, $alat, $jenis, $ket, $biaya]) {
+        foreach ($service as [$ago, $alat, $hm, $jenis, $ket, $biaya]) {
             Service::firstOrCreate(
                 ['alat_id' => $alat->id, 'keterangan' => $ket],
-                ['tanggal' => now()->subDays($ago)->toDateString(), 'jenis' => $jenis, 'biaya' => $biaya],
+                ['tanggal' => now()->subDays($ago)->toDateString(), 'hm' => $hm, 'jenis' => $jenis, 'biaya' => $biaya],
             );
         }
+
+        $bon = Bon::updateOrCreate(
+            ['nomor' => 'BON-'.now()->year.'-0001'],
+            [
+                'customer' => 'PT Karya Bengalon',
+                'proyek_id' => $tol->id,
+                'tanggal' => now()->subDays(12)->toDateString(),
+                'jatuh_tempo' => now()->addDays(18)->toDateString(),
+                'total' => 60000000,
+                'keterangan' => 'Sewa EX-01 10 hari',
+            ],
+        );
+
+        TransaksiKas::updateOrCreate(
+            ['keterangan' => 'Cicilan '.$bon->nomor, 'nominal' => 20000000],
+            ['tanggal' => now()->subDays(5)->toDateString(), 'jenis' => KasJenis::MASUK, 'bon_id' => $bon->id],
+        );
     }
 }

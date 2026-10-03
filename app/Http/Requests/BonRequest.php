@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ServiceRequest extends FormRequest
+class BonRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -17,12 +17,12 @@ class ServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'alat_id' => ['required', 'exists:alat,id'],
+            'customer' => ['required', 'string', 'max:150'],
+            'proyek_id' => ['nullable', 'exists:proyek,id'],
             'tanggal' => ['required', 'date'],
-            'hm' => ['nullable', 'numeric', 'min:0'],
-            'jenis' => ['nullable', 'string', 'max:100'],
+            'jatuh_tempo' => ['nullable', 'date', 'after_or_equal:tanggal'],
+            'total' => ['required', 'numeric', 'gt:0'],
             'keterangan' => ['nullable', 'string', 'max:1000'],
-            'biaya' => ['nullable', 'numeric', 'min:0'],
         ];
     }
 }

@@ -169,7 +169,7 @@
         </div>
     </div>
 
-    <div id="kas-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div id="kas-modal" class="fixed inset-0 z-60 hidden items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" data-close></div>
         <div class="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-float">
             <h2 class="font-display text-xl font-extrabold">Catat Transaksi Kas</h2>
@@ -207,6 +207,15 @@
                             @foreach ($proyek as $p) <option value="{{ $p->id }}">{{ $p->nama }}</option> @endforeach
                         </select>
                     </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label for="kas-bon" class="text-sm font-bold text-slate-700">Bon (opsional, untuk kas masuk)</label>
+                    <select id="kas-bon" name="bon_id" class="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base focus:border-mandau-blue focus:bg-white focus:outline-none">
+                        <option value="">— Tanpa bon —</option>
+                        @foreach ($bons as $b)
+                            <option value="{{ $b['id'] }}">{{ $b['nomor'] }} — {{ $b['customer'] }} (sisa {{ Format::rupiah($b['sisa']) }})</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="space-y-1.5">
                     <label for="kas-keterangan" class="text-sm font-bold text-slate-700">Keterangan</label>

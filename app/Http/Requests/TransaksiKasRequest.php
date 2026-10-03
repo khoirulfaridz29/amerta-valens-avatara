@@ -24,6 +24,7 @@ class TransaksiKasRequest extends FormRequest
             'nominal' => ['required', 'numeric', 'gt:0'],
             'keterangan' => ['required', 'string', 'max:255'],
             'proyek_id' => ['nullable', 'exists:proyek,id'],
+            'bon_id' => ['nullable', 'exists:bon,id'],
         ];
     }
 }

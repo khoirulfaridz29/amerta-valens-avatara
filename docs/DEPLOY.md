@@ -97,3 +97,34 @@ Login Google hanya muncul di halaman login **setelah** kredensial diisi.
 - [ ] (Opsional) Tentukan **URL produksi** (untuk `APP_URL`).
 
 Setelah 4 item di atas siap, kirim nilainya dan aku bantu sambungkan/isi `.env` dan langkah upload.
+
+---
+
+## E. Checklist Keamanan (sudah diterapkan di kode)
+
+| # | Area | Status |
+|---|------|--------|
+| 1 | API key | Tidak ada key di kode; Google key hanya di `.env` |
+| 2 | `.env` | Di-`.gitignore`, tidak pernah ter-commit |
+| 3 | Hardcode | Tidak ada secret/token hardcode |
+| 4 | Secret di git | `CLAUDE.md` & folder referensi berisi kredensial sudah dihapus/untrack |
+| 5 | Debug | Produksi `APP_DEBUG=false`, `APP_ENV=production` (di `.env.example`) |
+| 6 | Error bocor | Halaman error kustom (404/403/405/419/429/500/503), tanpa stack trace saat debug off |
+| 7–8 | Validasi & sanitasi | Semua form lewat FormRequest; output Blade auto-escape |
+| 9 | SQL injection | Eloquent/parameter binding (tanpa string concat) |
+| 10 | XSS | `{{ }}` auto-escape + CSP |
+| 11–13 | Auth & role | Middleware `auth` + `role:bos` (server-side); least privilege |
+| 14–15 | DB | Koneksi via `.env`; batasi user DB & jangan expose port publik |
+| 16 | Password | Di-hash (bcrypt, `hashed` cast) |
+| 17 | Session | Driver database, `SESSION_ENCRYPT=true`, HttpOnly, SameSite=lax, Secure saat HTTPS |
+| 18 | Reset password | Tidak ada flow publik; admin yang menetapkan password (aman) |
+| 19–20 | Upload | Hanya gambar (jpg/png/webp ≤ 5MB), validasi mime, nama file acak, eksekusi PHP diblokir (`.htaccess`) |
+| 21 | Kompresi | Gambar otomatis diperkecil (maks 1600px) & dikompres JPEG q75 |
+| + | Rate limit | Login dibatasi `throttle:6,1` |
+| + | Headers | CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, HSTS (HTTPS) |
+
+**Wajib saat deploy:**
+- Set `APP_DEBUG=false`, `APP_ENV=production`, `APP_KEY` baru (`php artisan key:generate`).
+- Set `SESSION_SECURE_COOKIE=true` (setelah HTTPS aktif).
+- Pastikan `public/uploads/.htaccess` ikut ter-upload.
+- User DB hanya boleh akses database aplikasi (bukan root).

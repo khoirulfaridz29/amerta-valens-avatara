@@ -36,7 +36,7 @@
         @endif
     </div>
 
-    <div id="kontrak-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div id="kontrak-modal" class="fixed inset-0 z-60 hidden items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" data-close></div>
         <div class="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-float">
             <h2 id="kontrak-modal-title" class="font-display text-xl font-extrabold">Tambah Kontrak</h2>

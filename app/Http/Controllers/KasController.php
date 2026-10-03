@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\KasJenis;
 use App\Http\Requests\TransaksiKasRequest;
+use App\Models\Bon;
 use App\Models\Proyek;
 use App\Models\TransaksiKas;
 use Illuminate\Http\RedirectResponse;
@@ -15,7 +16,7 @@ class KasController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = TransaksiKas::with('proyek');
+        $query = TransaksiKas::with(['proyek', 'bon']);
 
         if (in_array($request->query('jenis'), ['masuk', 'keluar'], true)) {
             $query->where('jenis', $request->query('jenis'));
@@ -36,11 +37,21 @@ class KasController extends Controller
             'nominal' => (float) $k->nominal,
             'keterangan' => $k->keterangan,
             'proyek_nama' => $k->proyek?->nama,
+            'bon_nomor' => $k->bon?->nomor,
             'tanggal' => $k->tanggal?->toDateString(),
         ])->all();
 
         $masuk = (float) TransaksiKas::where('jenis', KasJenis::MASUK->value)->sum('nominal');
         $keluar = (float) TransaksiKas::where('jenis', KasJenis::KELUAR->value)->sum('nominal');
+
+        $bons = Bon::orderByDesc('id')->get()
+            ->filter(fn (Bon $b) => ! $b->lunas)
+            ->map(fn (Bon $b) => [
+                'id' => $b->id,
+                'nomor' => $b->nomor,
+                'customer' => $b->customer,
+                'sisa' => $b->sisa,
+            ])->values()->all();
 
         return view('kas', [
             'data' => [
@@ -48,6 +59,7 @@ class KasController extends Controller
                 'items' => $items,
             ],
             'proyek' => Proyek::orderBy('nama')->get(),
+            'bons' => $bons,
             'bulanan' => $this->rekap('%Y-%m'),
             'tahunan' => $this->rekap('%Y'),
         ]);

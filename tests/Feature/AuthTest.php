@@ -5,48 +5,46 @@ namespace Tests\Feature;
 use App\Enums\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_admin_dapat_login_dengan_pin_dan_diarahkan_ke_dashboard(): void
+    public function test_admin_dapat_login_dan_diarahkan_ke_dashboard(): void
     {
-        $admin = User::factory()->create(['role' => Role::BOS, 'is_active' => true, 'pin' => Hash::make('123456')]);
+        $admin = User::factory()->create(['role' => Role::BOS, 'is_active' => true, 'email' => 'admin@test.local', 'password' => 'admin123']);
 
-        $this->post('/login', ['pin' => '123456'])->assertRedirect(route('dashboard'));
+        $this->post('/login', ['email' => 'admin@test.local', 'password' => 'admin123'])->assertRedirect(route('dashboard'));
         $this->assertAuthenticatedAs($admin);
     }
 
-    public function test_operator_login_dengan_pin_diarahkan_ke_laporan(): void
+    public function test_operator_login_diarahkan_ke_laporan(): void
     {
-        $operator = User::factory()->create(['role' => Role::OPERATOR, 'is_active' => true, 'pin' => Hash::make('654321')]);
+        User::factory()->create(['role' => Role::OPERATOR, 'is_active' => true, 'email' => 'op@test.local', 'password' => 'operator123']);
 
-        $this->post('/login', ['pin' => '654321'])->assertRedirect(route('laporan.index'));
-        $this->assertAuthenticatedAs($operator);
+        $this->post('/login', ['email' => 'op@test.local', 'password' => 'operator123'])->assertRedirect(route('laporan.index'));
     }
 
-    public function test_pin_salah_menghasilkan_error(): void
+    public function test_password_salah_menghasilkan_error(): void
     {
-        User::factory()->create(['role' => Role::BOS, 'pin' => Hash::make('123456')]);
+        User::factory()->create(['role' => Role::BOS, 'email' => 'admin@test.local', 'password' => 'admin123']);
 
-        $this->post('/login', ['pin' => '000000'])->assertSessionHasErrors('pin');
+        $this->post('/login', ['email' => 'admin@test.local', 'password' => 'salah'])->assertSessionHasErrors('email');
         $this->assertGuest();
     }
 
     public function test_akun_nonaktif_tidak_dapat_login(): void
     {
-        User::factory()->create(['role' => Role::OPERATOR, 'is_active' => false, 'pin' => Hash::make('654321')]);
+        User::factory()->create(['role' => Role::OPERATOR, 'is_active' => false, 'email' => 'op@test.local', 'password' => 'operator123']);
 
-        $this->post('/login', ['pin' => '654321'])->assertSessionHasErrors('pin');
+        $this->post('/login', ['email' => 'op@test.local', 'password' => 'operator123'])->assertSessionHasErrors('email');
         $this->assertGuest();
     }
 
     public function test_operator_tidak_dapat_mengakses_halaman_admin(): void
     {
-        $operator = User::factory()->create(['role' => Role::OPERATOR, 'is_active' => true, 'pin' => Hash::make('654321')]);
+        $operator = User::factory()->create(['role' => Role::OPERATOR, 'is_active' => true]);
 
         $this->actingAs($operator)->get(route('proyek.index'))->assertForbidden();
         $this->actingAs($operator)->get(route('kas.index'))->assertForbidden();
@@ -57,5 +55,12 @@ class AuthTest extends TestCase
     public function test_tamu_diarahkan_ke_login(): void
     {
         $this->get(route('dashboard'))->assertRedirect(route('login'));
+    }
+
+    public function test_halaman_404_menampilkan_halaman_error_kustom(): void
+    {
+        $this->get('/halaman-yang-tidak-ada')
+            ->assertNotFound()
+            ->assertSee('Halaman tidak ditemukan');
     }
 }

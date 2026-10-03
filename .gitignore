@@ -18,7 +18,7 @@
 /public/fonts-manifest.dev.json
 /public/hot
 /public/storage
-/public/uploads
+/public/uploads/laporan/*
 /storage/*.key
 /storage/pail
 /vendor
@@ -26,3 +26,6 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Referensi design pihak lain (berisi kredensial) - jangan di-commit
+/docs/design ui/

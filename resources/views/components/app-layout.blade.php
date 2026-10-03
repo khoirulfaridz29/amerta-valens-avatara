@@ -9,13 +9,14 @@
         ['route' => 'alat.index', 'label' => 'Data Alat', 'icon' => 'truck', 'tid' => 'nav-equipment-link'],
         ['route' => 'proyek.index', 'label' => 'Kontrak / Lokasi', 'icon' => 'mappin', 'tid' => 'nav-projects-link'],
         ['route' => 'kas.index', 'label' => 'Buku Kas', 'icon' => 'wallet', 'tid' => 'nav-cashbook-link'],
+        ['route' => 'bon.index', 'label' => 'Bon', 'icon' => 'clipboard', 'tid' => 'nav-bon-link'],
         ['route' => 'service.index', 'label' => 'Riwayat Service', 'icon' => 'fuel', 'tid' => 'nav-service-link'],
         ['route' => 'laporan.index', 'label' => 'Laporan Harian', 'icon' => 'file', 'tid' => 'nav-reports-link'],
         ['route' => 'operator.index', 'label' => 'Operator', 'icon' => 'users', 'tid' => 'nav-operators-link'],
     ];
     $opNav = [
         ['route' => 'laporan.index', 'label' => 'Lapor Harian', 'icon' => 'file', 'tid' => 'nav-reports-link'],
-        ['route' => 'alat.index', 'label' => 'Data Alat', 'icon' => 'truck', 'tid' => 'nav-equipment-link'],
+        ['route' => 'rekap.index', 'label' => 'Rekap Aktivitas', 'icon' => 'clipboard', 'tid' => 'nav-rekap-link'],
     ];
     $nav = $isBos ? $bosNav : $opNav;
     $find = fn (string $r) => collect($nav)->firstWhere('route', $r);
@@ -25,7 +26,7 @@
 
     $dock = $isBos
         ? [$find('dashboard'), $find('alat.index'), 'FAB', $find('laporan.index'), $find('kas.index')]
-        : [$find('laporan.index'), 'FAB', $find('alat.index')];
+        : [$find('laporan.index'), 'FAB', $find('rekap.index')];
 @endphp
 
 <!DOCTYPE html>
@@ -60,8 +61,8 @@
                 </a>
             @endforeach
         </nav>
-        <div class="shrink-0 rounded-2xl bg-white/10 p-4">
-            <div class="flex items-center gap-3">
+        <div class="shrink-0 space-y-2">
+            <div class="flex items-center gap-3 rounded-2xl bg-white/10 p-4">
                 <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/20 text-xs font-extrabold text-white">
                     {{ \App\Support\Format::initials($user->name) }}
                 </span>
@@ -72,8 +73,9 @@
             </div>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" data-testid="logout-button" class="mt-3 flex items-center gap-2 text-xs font-bold text-blue-100 transition hover:text-white">
-                    <x-icon name="logout" class="h-3.5 w-3.5" /> Keluar
+                <button type="submit" data-testid="logout-button"
+                        class="flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-red-500 text-sm font-bold text-white shadow-lg transition hover:bg-red-600 active:scale-95">
+                    <x-icon name="logout" class="h-4 w-4" /> Keluar
                 </button>
             </form>
         </div>
@@ -88,21 +90,30 @@
                     {{ \App\Support\Format::greeting() }}, {{ explode(' ', $user->name)[0] }}
                 </h2>
             </div>
-            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#2D6FF2] to-[#1E429F] text-sm font-extrabold text-white shadow-lg shadow-blue-500/25">
-                {{ \App\Support\Format::initials($user->name) }}
-            </span>
-        </div>
-        @if ($isBos)
-            <div class="flex gap-2 overflow-x-auto px-4 pb-3 no-scrollbar">
-                @foreach ([['route' => 'proyek.index', 'label' => 'Kontrak / Lokasi', 'tid' => 'chip-projects-link'], ['route' => 'service.index', 'label' => 'Riwayat Service', 'tid' => 'chip-service-link'], ['route' => 'operator.index', 'label' => 'Operator', 'tid' => 'chip-operators-link']] as $c)
-                    @php $active = request()->routeIs($c['route']); @endphp
-                    <a href="{{ route($c['route']) }}" data-testid="{{ $c['tid'] }}"
-                       class="whitespace-nowrap rounded-full border px-4 py-2 text-xs font-bold transition {{ $active ? 'border-mandau-blue bg-mandau-blue text-white shadow-md shadow-blue-500/25' : 'border-slate-200 bg-white text-slate-600' }}">
-                        {{ $c['label'] }}
-                    </a>
-                @endforeach
+            <div class="relative">
+                <button type="button" id="profile-btn" aria-label="Profil" aria-expanded="false"
+                        class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#2D6FF2] to-[#1E429F] text-sm font-extrabold text-white shadow-lg shadow-blue-500/25">
+                    {{ \App\Support\Format::initials($user->name) }}
+                </button>
+                <div id="profile-menu" class="absolute right-0 top-14 z-50 hidden w-60 rounded-2xl border border-slate-200 bg-white p-3 shadow-float">
+                    <div class="flex items-center gap-3 rounded-xl bg-slate-50 p-3">
+                        <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#2D6FF2] to-[#1E429F] text-xs font-extrabold text-white">
+                            {{ \App\Support\Format::initials($user->name) }}
+                        </span>
+                        <div class="min-w-0">
+                            <p class="truncate text-sm font-bold text-slate-800">{{ $user->name }}</p>
+                            <p class="truncate text-xs text-slate-500">{{ $isBos ? 'Admin' : 'Operator' }}</p>
+                        </div>
+                    </div>
+                    <form method="POST" action="{{ route('logout') }}" class="mt-3">
+                        @csrf
+                        <button type="submit" class="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-red-500 text-sm font-bold text-white transition hover:bg-red-600 active:scale-[0.98]">
+                            <x-icon name="logout" class="h-4 w-4" /> Keluar
+                        </button>
+                    </form>
+                </div>
             </div>
-        @endif
+        </div>
     </header>
 
     {{-- Canvas --}}
@@ -138,5 +149,27 @@
             @endif
         @endforeach
     </nav>
+
+    <script>
+        (function () {
+            var btn = document.getElementById('profile-btn');
+            var menu = document.getElementById('profile-menu');
+            if (!btn || !menu) return;
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var open = !menu.classList.toggle('hidden');
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
+            document.addEventListener('click', function () {
+                menu.classList.add('hidden');
+                btn.setAttribute('aria-expanded', 'false');
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') menu.classList.add('hidden');
+            });
+        })();
+    </script>
+
+    <x-alert-modal />
 </body>
 </html>

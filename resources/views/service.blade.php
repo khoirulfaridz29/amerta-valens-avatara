@@ -21,6 +21,7 @@
                     <thead class="bg-slate-50 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
                         <tr>
                             <th class="px-5 py-4">Tanggal</th>
+                            <th class="px-5 py-4">HM</th>
                             <th class="px-5 py-4">Alat</th>
                             <th class="px-5 py-4">Jenis</th>
                             <th class="px-5 py-4">Keterangan</th>
@@ -32,6 +33,7 @@
                         @foreach ($items as $s)
                             <tr class="border-t border-slate-100 transition hover:bg-[#EFF4FF]/50">
                                 <td class="px-5 py-4 text-slate-600">{{ Format::tgl($s['tanggal']) }}</td>
+                                <td class="font-num px-5 py-4 font-bold text-slate-700">{{ $s['hm'] !== null ? Format::hm($s['hm']) : '-' }}</td>
                                 <td class="px-5 py-4">
                                     <span class="font-num rounded-lg bg-[#EFF4FF] px-2.5 py-1 text-xs font-bold text-mandau-blue">{{ $s['alat_kode'] }}</span>
                                     <span class="ml-2 font-semibold text-slate-800">{{ $s['alat_nama'] }}</span>
@@ -65,7 +67,7 @@
                         <div class="flex items-start justify-between gap-3">
                             <div class="min-w-0">
                                 <p class="font-bold text-slate-800">{{ $s['alat_kode'] }} · {{ $s['alat_nama'] }}</p>
-                                <p class="mt-0.5 text-xs text-slate-500">{{ $s['jenis'] ?: 'Service' }} · {{ Format::tgl($s['tanggal']) }}</p>
+                                <p class="mt-0.5 text-xs text-slate-500">{{ $s['jenis'] ?: 'Service' }} · {{ Format::tgl($s['tanggal']) }}{{ $s['hm'] !== null ? ' · ' . Format::hm($s['hm']) : '' }}</p>
                                 @if ($s['keterangan']) <p class="mt-2 text-sm text-slate-600">{{ $s['keterangan'] }}</p> @endif
                             </div>
                             @if ($s['biaya'] !== null)
@@ -90,7 +92,7 @@
         @endif
     </div>
 
-    <div id="service-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div id="service-modal" class="fixed inset-0 z-60 hidden items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" data-close></div>
         <div class="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-float">
             <h2 id="service-modal-title" class="font-display text-xl font-extrabold">Tambah Riwayat Service</h2>
@@ -111,13 +113,18 @@
                                class="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base focus:border-mandau-blue focus:bg-white focus:outline-none">
                     </div>
                     <div class="space-y-1.5">
-                        <label for="sv-jenis" class="text-sm font-bold text-slate-700">Jenis</label>
-                        <input id="sv-jenis" name="jenis" placeholder="cth. Servis berkala" list="sv-jenis-list"
-                               class="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base focus:border-mandau-blue focus:bg-white focus:outline-none">
-                        <datalist id="sv-jenis-list">
-                            <option value="Servis berkala"></option><option value="Ganti oli"></option><option value="Perbaikan"></option><option value="Ganti sparepart"></option>
-                        </datalist>
+                        <label for="sv-hm" class="text-sm font-bold text-slate-700">HM Service</label>
+                        <input id="sv-hm" name="hm" type="number" min="0" step="0.1" placeholder="cth. 1200"
+                               class="font-num h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base focus:border-mandau-blue focus:bg-white focus:outline-none">
                     </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label for="sv-jenis" class="text-sm font-bold text-slate-700">Jenis</label>
+                    <input id="sv-jenis" name="jenis" placeholder="cth. Servis berkala" list="sv-jenis-list"
+                           class="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base focus:border-mandau-blue focus:bg-white focus:outline-none">
+                    <datalist id="sv-jenis-list">
+                        <option value="Servis berkala"></option><option value="Ganti oli"></option><option value="Perbaikan"></option><option value="Ganti sparepart"></option>
+                    </datalist>
                 </div>
                 <div class="space-y-1.5">
                     <label for="sv-biaya" class="text-sm font-bold text-slate-700">Biaya (Rp)</label>
@@ -147,6 +154,7 @@
                 form.reset();
                 document.getElementById('sv-alat').value = data.alat_id || '';
                 document.getElementById('sv-tanggal').value = data.tanggal || @json(\App\Support\Format::hariIni());
+                document.getElementById('sv-hm').value = data.hm != null ? data.hm : '';
                 document.getElementById('sv-jenis').value = data.jenis || '';
                 document.getElementById('sv-biaya').value = data.biaya != null ? data.biaya : '';
                 document.getElementById('sv-keterangan').value = data.keterangan || '';

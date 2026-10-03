@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class LoginController extends Controller
@@ -19,23 +17,28 @@ class LoginController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $data = $request->validate(['pin' => ['required', 'string', 'min:4', 'max:8']]);
-        $pin = $data['pin'];
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
+        ]);
 
-        $user = User::query()
-            ->whereNotNull('pin')
-            ->where('is_active', true)
-            ->get()
-            ->first(fn (User $u) => Hash::check($pin, $u->pin));
-
-        if (! $user) {
-            return back()->withErrors(['pin' => 'PIN salah. Coba lagi.'])->onlyInput();
+        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+            return back()
+                ->withErrors(['email' => 'Email atau password salah.'])
+                ->onlyInput('email');
         }
 
-        Auth::login($user, true);
         $request->session()->regenerate();
 
-        return redirect()->route($user->isBos() ? 'dashboard' : 'laporan.index');
+        if (! $request->user()->is_active) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return back()->withErrors(['email' => 'Akun ini tidak aktif.'])->onlyInput('email');
+        }
+
+        return redirect()->route($request->user()->isBos() ? 'dashboard' : 'laporan.index');
     }
 
     public function destroy(Request $request): RedirectResponse
