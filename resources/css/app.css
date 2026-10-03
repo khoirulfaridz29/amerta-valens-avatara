@@ -1,0 +1,107 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
+
+/* ===== Tema MANDAU — persis dari tailwind.config.js + index.css ===== */
+@theme {
+    --color-mandau-blue: #2d6ff2;
+    --color-mandau-blue-hover: #1e56d9;
+    --color-mandau-blue-deep: #1e429f;
+    --color-mandau-navy: #0b1e4b;
+    --color-mandau-bg: #e9eef6;
+    --color-mandau-canvas: #f7f9fd;
+    --color-mandau-line: #e2e8f0;
+
+    --font-display: 'Plus Jakarta Sans', ui-sans-serif, sans-serif;
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+    --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 32px -12px rgba(30, 66, 159, 0.14);
+    --shadow-float: 0 24px 60px -24px rgba(30, 66, 159, 0.28);
+}
+
+:root {
+    --mandau-blue: #2d6ff2;
+    --mandau-blue-deep: #1e429f;
+    --mandau-navy: #0b1e4b;
+    --mandau-bg: #e9eef6;
+    --mandau-line: #e2e8f0;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        margin: 0;
+        font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+        background: var(--mandau-bg);
+        color: #0f172a;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+    }
+
+    *,
+    ::before,
+    ::after {
+        border-color: var(--mandau-line);
+    }
+}
+
+.font-num {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+::selection {
+    background: var(--mandau-blue);
+    color: #fff;
+}
+
+:focus-visible {
+    outline: 2px solid var(--mandau-blue);
+    outline-offset: 2px;
+    border-radius: 6px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    scrollbar-width: none;
+}
+
+/* Grain wash untuk hero login */
+.grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+}
+
+input[type='date'] {
+    min-height: 44px;
+}
+
+@keyframes marquee {
+    to {
+        transform: translateX(-50%);
+    }
+}
+.animate-marquee {
+    animation: marquee 32s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-marquee {
+        animation: none;
+    }
+}
