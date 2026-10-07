@@ -36,6 +36,8 @@ class KasController extends Controller
             'jenis' => $k->jenis->value,
             'nominal' => (float) $k->nominal,
             'keterangan' => $k->keterangan,
+            'proyek_id' => $k->proyek_id,
+            'bon_id' => $k->bon_id,
             'proyek_nama' => $k->proyek?->nama,
             'bon_nomor' => $k->bon?->nomor,
             'tanggal' => $k->tanggal?->toDateString(),
@@ -70,6 +72,20 @@ class KasController extends Controller
         TransaksiKas::create($request->validated());
 
         return redirect()->route('kas.index')->with('status', 'Transaksi kas tercatat');
+    }
+
+    public function update(TransaksiKasRequest $request, TransaksiKas $kas): RedirectResponse
+    {
+        $kas->update($request->validated());
+
+        return redirect()->route('kas.index')->with('status', 'Transaksi kas diperbarui');
+    }
+
+    public function destroy(TransaksiKas $kas): RedirectResponse
+    {
+        $kas->delete();
+
+        return redirect()->route('kas.index')->with('status', 'Transaksi kas dihapus');
     }
 
     /**

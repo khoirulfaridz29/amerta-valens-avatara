@@ -124,7 +124,7 @@
                 </div>
                 <div class="space-y-1.5">
                     <label for="bon-total" class="text-sm font-bold text-slate-700">Total tagihan (Rp)</label>
-                    <input id="bon-total" name="total" type="number" min="1" step="1000" required placeholder="cth. 45000000"
+                    <input id="bon-total" name="total" type="number" min="1" step="1" required placeholder="cth. 45000000"
                            class="font-num h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base focus:border-mandau-blue focus:bg-white focus:outline-none">
                 </div>
                 <div class="space-y-1.5">

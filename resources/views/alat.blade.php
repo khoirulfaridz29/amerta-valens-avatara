@@ -20,7 +20,7 @@
             <x-empty-state icon="truck" title="Belum ada alat" :sub="$isBos ? 'Tambahkan alat pertama agar operator bisa mengirim laporan.' : 'Belum ada alat aktif. Hubungi Bos.'" />
         @else
             {{-- Desktop table --}}
-            <div class="hidden overflow-hidden rounded-3xl ring-1 ring-slate-200 md:block">
+            <div class="hidden overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-slate-100 md:block">
                 <table class="w-full text-sm">
                     <thead class="bg-slate-50 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
                         <tr>
@@ -55,7 +55,13 @@
                                                     class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 text-slate-500 transition hover:border-mandau-blue hover:text-mandau-blue">
                                                 <x-icon name="pencil" class="h-4 w-4" />
                                             </button>
-                                            <form method="POST" action="{{ route('alat.active', $a['id']) }}">
+                                            <form method="POST" action="{{ route('alat.destroy', $a['id']) }}" onsubmit="return confirm('Hapus alat ini?')">
+    @csrf @method('DELETE')
+    <button type="submit" aria-label="Hapus {{ $a['nama'] }}" class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 text-red-500 transition hover:border-red-400">
+        <x-icon name="logout" class="h-4 w-4" />
+    </button>
+</form>
+<form method="POST" action="{{ route('alat.active', $a['id']) }}">
                                                 @csrf @method('PUT')
                                                 <input type="hidden" name="active" value="{{ $a['active'] ? 0 : 1 }}">
                                                 <button type="submit" role="switch" aria-checked="{{ $a['active'] ? 'true' : 'false' }}" aria-label="{{ $a['active'] ? 'Nonaktifkan alat' : 'Aktifkan alat' }}"
@@ -98,7 +104,13 @@
                                             class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 text-slate-500">
                                         <x-icon name="pencil" class="h-4 w-4" />
                                     </button>
-                                    <form method="POST" action="{{ route('alat.active', $a['id']) }}">
+                                    <form method="POST" action="{{ route('alat.destroy', $a['id']) }}" onsubmit="return confirm('Hapus alat ini?')">
+    @csrf @method('DELETE')
+    <button type="submit" aria-label="Hapus {{ $a['nama'] }}" class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 text-red-500 transition hover:border-red-400">
+        <x-icon name="logout" class="h-4 w-4" />
+    </button>
+</form>
+<form method="POST" action="{{ route('alat.active', $a['id']) }}">
                                         @csrf @method('PUT')
                                         <input type="hidden" name="active" value="{{ $a['active'] ? 0 : 1 }}">
                                         <button type="submit" role="switch" aria-checked="{{ $a['active'] ? 'true' : 'false' }}" aria-label="{{ $a['active'] ? 'Nonaktifkan alat' : 'Aktifkan alat' }}"

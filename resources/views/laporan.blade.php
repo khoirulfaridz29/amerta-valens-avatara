@@ -159,6 +159,18 @@
                             </div>
 
                             <p class="mt-3 text-xs text-slate-400">Operator: {{ $l['operator_nama'] ?: '-' }}</p>
+                            <div class="mt-3 flex items-center justify-end gap-2 border-t border-slate-100 pt-3">
+                                <button type="button" aria-label="Ubah" data-edit-laporan='@json($l)'
+                                        class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 text-slate-500 transition hover:border-mandau-blue hover:text-mandau-blue">
+                                    <x-icon name="pencil" class="h-4 w-4" />
+                                </button>
+                                <form method="POST" action="{{ route('laporan.destroy', $l['id']) }}" onsubmit="return confirm('Hapus laporan ini?')">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 text-red-500 transition hover:border-red-400">
+                                        <x-icon name="logout" class="h-4 w-4" />
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     @endforeach
                 </div>
@@ -184,4 +196,83 @@
             }
         </script>
     @endunless
+
+    <div id="lap-edit" class="fixed inset-0 z-60 hidden items-center justify-center p-4" role="dialog" aria-modal="true">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" data-le-close></div>
+        <div class="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-3xl bg-white p-6 shadow-float">
+            <h2 class="font-display text-xl font-extrabold">Ubah Laporan</h2>
+            <form id="lep-form" method="POST" action="{{ route('laporan.store') }}" enctype="multipart/form-data" class="mt-5 space-y-4">
+                @csrf
+                <input type="hidden" name="_method" id="lep-method" value="PUT">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-1.5">
+                        <label for="lep-tanggal" class="text-sm font-bold text-slate-700">Tanggal</label>
+                        <input id="lep-tanggal" name="tanggal" type="date" required class="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base focus:border-mandau-blue focus:bg-white focus:outline-none">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label for="lep-solar" class="text-sm font-bold text-slate-700">Solar (Jerigen)</label>
+                        <input id="lep-solar" name="solar_jerigen" type="number" min="0" step="0.1" class="font-num h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base focus:border-mandau-blue focus:bg-white focus:outline-none">
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label for="lep-alat" class="text-sm font-bold text-slate-700">Alat</label>
+                    <select id="lep-alat" name="alat_id" required class="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base focus:border-mandau-blue focus:bg-white focus:outline-none">
+                        @foreach ($alat as $a) <option value="{{ $a->id }}">{{ $a->kode }} — {{ $a->nama }}</option> @endforeach
+                    </select>
+                </div>
+                <div class="space-y-1.5">
+                    <label for="lep-proyek" class="text-sm font-bold text-slate-700">Kontrak / Lokasi</label>
+                    <select id="lep-proyek" name="proyek_id" required class="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base focus:border-mandau-blue focus:bg-white focus:outline-none">
+                        @foreach ($proyek as $p) <option value="{{ $p->id }}">{{ $p->nama }}</option> @endforeach
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-1.5">
+                        <label for="lep-hm-awal" class="text-sm font-bold text-slate-700">HM Awal</label>
+                        <input id="lep-hm-awal" name="hm_awal" type="number" min="0" step="0.1" required class="font-num h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base focus:border-mandau-blue focus:bg-white focus:outline-none">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label for="lep-hm-akhir" class="text-sm font-bold text-slate-700">HM Akhir</label>
+                        <input id="lep-hm-akhir" name="hm_akhir" type="number" min="0" step="0.1" required class="font-num h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base focus:border-mandau-blue focus:bg-white focus:outline-none">
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label for="lep-keterangan" class="text-sm font-bold text-slate-700">Keterangan</label>
+                    <textarea id="lep-keterangan" name="keterangan" rows="2" class="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 text-base focus:border-mandau-blue focus:bg-white focus:outline-none"></textarea>
+                </div>
+                <p class="text-xs text-slate-400">Foto: biarkan kosong bila tidak diganti.</p>
+                <div class="grid grid-cols-3 gap-2">
+                    @foreach (['foto_hm_awal', 'foto_hm_akhir', 'foto_lokasi'] as $f)
+                        <input name="{{ $f }}" type="file" accept="image/*"
+                               class="block w-full rounded-xl border border-slate-200 bg-slate-50 p-1.5 text-[11px] text-slate-600 file:mr-1 file:rounded-full file:border-0 file:bg-[#EFF4FF] file:px-2 file:py-1 file:text-[11px] file:font-bold file:text-mandau-blue">
+                    @endforeach
+                </div>
+                <button type="submit" class="h-12 w-full rounded-full bg-mandau-blue text-base font-bold text-white shadow-lg shadow-blue-500/30 transition hover:bg-mandau-blue-hover active:scale-[0.98]">Simpan Perubahan</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var modal = document.getElementById('lap-edit');
+            var form = document.getElementById('lep-form');
+            var method = document.getElementById('lep-method');
+            var updateUrl = @json(route('laporan.update', ['laporan' => 'ID']));
+            function open(data) {
+                form.reset();
+                document.getElementById('lep-tanggal').value = data.tanggal || '';
+                document.getElementById('lep-solar').value = data.solar_jerigen != null ? data.solar_jerigen : '';
+                document.getElementById('lep-alat').value = data.alat_id || '';
+                document.getElementById('lep-proyek').value = data.proyek_id || '';
+                document.getElementById('lep-hm-awal').value = data.hm_awal != null ? data.hm_awal : '';
+                document.getElementById('lep-hm-akhir').value = data.hm_akhir != null ? data.hm_akhir : '';
+                document.getElementById('lep-keterangan').value = data.keterangan || '';
+                form.action = updateUrl.replace('ID', data.id); method.value = 'PUT';
+                modal.classList.remove('hidden'); modal.classList.add('flex');
+            }
+            function close() { modal.classList.add('hidden'); modal.classList.remove('flex'); }
+            document.querySelectorAll('[data-edit-laporan]').forEach(function (b) { b.addEventListener('click', function () { open(JSON.parse(b.dataset.editLaporan)); }); });
+            document.querySelectorAll('[data-le-close]').forEach(function (b) { b.addEventListener('click', close); });
+        })();
+    </script>
 </x-app-layout>

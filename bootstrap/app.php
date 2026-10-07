@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AjaxFlashToJson;
 use App\Http\Middleware\EnsureRole;
 use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
@@ -19,6 +20,7 @@ $app = Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->web(append: [
             SecurityHeaders::class,
+            AjaxFlashToJson::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

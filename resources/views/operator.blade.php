@@ -43,6 +43,13 @@
                                         <span class="inline-block h-5 w-5 transform rounded-full bg-white shadow transition {{ $op['active'] ? 'translate-x-5' : 'translate-x-0.5' }}"></span>
                                     </button>
                                 </form>
+                                <form method="POST" action="{{ route('operator.destroy', $op['id']) }}" onsubmit="return confirm('Hapus operator ini?')">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" aria-label="Hapus {{ $op['name'] }}"
+                                            class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 text-red-500 transition hover:border-red-400">
+                                        <x-icon name="logout" class="h-4 w-4" />
+                                    </button>
+                                </form>
                             </div>
                         </div>
                         <p class="mt-4 border-t border-slate-100 pt-3 text-xs font-semibold text-slate-400">{{ $op['laporan_count'] }} laporan terkirim</p>

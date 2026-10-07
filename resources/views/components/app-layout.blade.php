@@ -37,6 +37,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title }} — Amerta Valens Avatara</title>
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -72,7 +75,7 @@
                     <p class="truncate text-xs text-blue-200">{{ $isBos ? 'Admin' : 'Operator' }}</p>
                 </div>
             </div>
-            <form method="POST" action="{{ route('logout') }}">
+            <form method="POST" action="{{ route('logout') }}" data-no-ajax>
                 @csrf
                 <button type="submit" data-testid="logout-button"
                         class="flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-red-500 text-sm font-bold text-white shadow-lg transition hover:bg-red-600 active:scale-95">
@@ -167,12 +170,74 @@
 
     <x-alert-modal />
 
-    @if (session('status') || session('error'))
+    <script>
+        (function () {
+            var meta = document.querySelector('meta[name="csrf-token"]');
+            var csrf = meta ? meta.getAttribute('content') : '';
+
+            function showAlert(opts) { if (window.avaAlert) window.avaAlert(opts); else alert(opts.message || ''); }
+
+            async function submitForm(form) {
+                var btn = form.querySelector('button[type="submit"]');
+                if (btn) btn.disabled = true;
+                try {
+                    var res = await fetch(form.action, {
+                        method: 'POST',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf },
+                        body: new FormData(form),
+                        credentials: 'same-origin'
+                    });
+                    var text = await res.text();
+                    var data = {};
+                    try { data = text ? JSON.parse(text) : {}; } catch (e) { data = {}; }
+
+                    if (res.ok && data.ok !== false) {
+                        showAlert({
+                            title: 'Berhasil',
+                            message: data.message || 'Berhasil disimpan.',
+                            confirmText: 'Oke',
+                            cancelText: 'Tutup',
+                            onClose: function () { window.location.href = data.redirect || window.location.href; }
+                        });
+                        return;
+                    }
+                    if (res.status === 422) {
+                        var msg = data.message || 'Periksa input Anda.';
+                        if (data.errors) { var k = Object.keys(data.errors)[0]; if (k) msg = data.errors[k][0]; }
+                        showAlert({ title: 'Gagal', message: msg });
+                    } else if (res.status === 419) {
+                        showAlert({ title: 'Sesi berakhir', message: 'Sesi Anda berakhir. Muat ulang halaman lalu masuk kembali.' });
+                    } else {
+                        showAlert({ title: 'Gagal', message: data.message || 'Terjadi kesalahan. Coba lagi.' });
+                    }
+                } catch (e) {
+                    showAlert({ title: 'Gagal', message: 'Koneksi bermasalah. Coba lagi.' });
+                }
+                if (btn) btn.disabled = false;
+            }
+
+            document.querySelectorAll('form').forEach(function (form) {
+                if (form.method.toUpperCase() !== 'POST') return;
+                if (form.hasAttribute('data-no-ajax')) return;
+                form.addEventListener('submit', function (e) {
+                    if (e.defaultPrevented) return;
+                    e.preventDefault();
+                    submitForm(form);
+                });
+            });
+        })();
+    </script>
+
+    @php
+        $flashError = session('error') ?: ($errors->any() ? $errors->first() : null);
+        $flashSuccess = session('status');
+    @endphp
+    @if ($flashError || $flashSuccess)
         <script>
             window.addEventListener('load', function () {
                 window.avaAlert({
-                    title: @json(session('error') ? 'Gagal' : 'Berhasil'),
-                    message: @json(session('error') ?: session('status')),
+                    title: @json($flashError ? 'Gagal' : 'Berhasil'),
+                    message: @json($flashError ?: $flashSuccess),
                 });
             });
         </script>

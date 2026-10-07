@@ -16,7 +16,7 @@
         @if (count($items) === 0)
             <x-empty-state icon="fuel" title="Belum ada riwayat service" sub="Catat service alat agar riwayat perawatan tersimpan." />
         @else
-            <div class="hidden overflow-hidden rounded-3xl ring-1 ring-slate-200 md:block">
+            <div class="hidden overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-slate-100 md:block">
                 <table class="w-full text-sm">
                     <thead class="bg-slate-50 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
                         <tr>
@@ -128,7 +128,7 @@
                 </div>
                 <div class="space-y-1.5">
                     <label for="sv-biaya" class="text-sm font-bold text-slate-700">Biaya (Rp)</label>
-                    <input id="sv-biaya" name="biaya" type="number" min="0" step="1000" placeholder="cth. 1500000"
+                    <input id="sv-biaya" name="biaya" type="number" min="0" step="1" placeholder="cth. 1500000"
                            class="font-num h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base focus:border-mandau-blue focus:bg-white focus:outline-none">
                 </div>
                 <div class="space-y-1.5">

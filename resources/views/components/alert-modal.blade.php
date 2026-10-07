@@ -38,7 +38,11 @@
         document.getElementById('ava-alert-message').textContent = opts.message || '';
         document.getElementById('ava-alert-cancel').textContent = opts.cancelText || 'Tutup';
         document.getElementById('ava-alert-confirm').textContent = opts.confirmText || 'Mengerti';
-        var close = function () { box.classList.add('hidden'); box.classList.remove('flex'); };
+        var close = function () {
+            box.classList.add('hidden');
+            box.classList.remove('flex');
+            if (typeof opts.onClose === 'function') opts.onClose();
+        };
         var confirm = document.getElementById('ava-alert-confirm');
         confirm.onclick = function () { close(); if (typeof opts.onConfirm === 'function') opts.onConfirm(); };
         box.querySelectorAll('[data-alert-close]').forEach(function (el) { el.onclick = close; });

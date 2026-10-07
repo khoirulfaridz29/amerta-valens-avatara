@@ -34,4 +34,15 @@ class ProyekController extends Controller
 
         return redirect()->route('proyek.index')->with('status', 'Kontrak / lokasi diperbarui');
     }
+
+    public function destroy(Proyek $proyek): RedirectResponse
+    {
+        if ($proyek->alat()->exists() || $proyek->laporan()->exists() || $proyek->transaksi()->exists() || $proyek->bons()->exists()) {
+            return back()->with('error', 'Kontrak/lokasi masih dipakai (alat/laporan/kas/bon).');
+        }
+
+        $proyek->delete();
+
+        return redirect()->route('proyek.index')->with('status', 'Kontrak / lokasi dihapus');
+    }
 }

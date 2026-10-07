@@ -41,6 +41,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::post('/laporan', [LaporanController::class, 'store'])->name('laporan.store');
+    Route::put('/laporan/{laporan}', [LaporanController::class, 'update'])->name('laporan.update');
+    Route::delete('/laporan/{laporan}', [LaporanController::class, 'destroy'])->name('laporan.destroy');
 
     Route::get('/rekap', [RekapController::class, 'index'])->name('rekap.index');
 
@@ -48,13 +50,17 @@ Route::middleware('auth')->group(function () {
         Route::post('/alat', [AlatController::class, 'store'])->name('alat.store');
         Route::put('/alat/{alat}', [AlatController::class, 'update'])->name('alat.update');
         Route::put('/alat/{alat}/active', [AlatController::class, 'toggleActive'])->name('alat.active');
+        Route::delete('/alat/{alat}', [AlatController::class, 'destroy'])->name('alat.destroy');
 
         Route::get('/kontrak', [ProyekController::class, 'index'])->name('proyek.index');
         Route::post('/kontrak', [ProyekController::class, 'store'])->name('proyek.store');
         Route::put('/kontrak/{proyek}', [ProyekController::class, 'update'])->name('proyek.update');
+        Route::delete('/kontrak/{proyek}', [ProyekController::class, 'destroy'])->name('proyek.destroy');
 
         Route::get('/kas', [KasController::class, 'index'])->name('kas.index');
         Route::post('/kas', [KasController::class, 'store'])->name('kas.store');
+        Route::put('/kas/{kas}', [KasController::class, 'update'])->name('kas.update');
+        Route::delete('/kas/{kas}', [KasController::class, 'destroy'])->name('kas.destroy');
 
         Route::get('/bon', [BonController::class, 'index'])->name('bon.index');
         Route::post('/bon', [BonController::class, 'store'])->name('bon.store');
@@ -69,6 +75,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/operator', [OperatorController::class, 'index'])->name('operator.index');
         Route::post('/operator', [OperatorController::class, 'store'])->name('operator.store');
         Route::put('/operator/{user}', [OperatorController::class, 'update'])->name('operator.update');
+        Route::delete('/operator/{user}', [OperatorController::class, 'destroy'])->name('operator.destroy');
 
         Route::get('/pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
         Route::put('/pengaturan', [PengaturanController::class, 'update'])->name('pengaturan.update');

@@ -58,13 +58,13 @@ class LaporanHarianTest extends TestCase
         $alatA = Alat::create(['nama' => 'Excavator Alpha', 'kode' => 'A-1', 'status' => AlatStatus::AKTIF, 'active' => true]);
         $alatB = Alat::create(['nama' => 'Bulldozer Beta', 'kode' => 'B-1', 'status' => AlatStatus::AKTIF, 'active' => true]);
 
-        LaporanHarian::create(['alat_id' => $alatA->id, 'user_id' => $operatorA->id, 'tanggal' => now()->toDateString(), 'hm_awal' => 1, 'hm_akhir' => 2]);
-        LaporanHarian::create(['alat_id' => $alatB->id, 'user_id' => $operatorB->id, 'tanggal' => now()->toDateString(), 'hm_awal' => 1, 'hm_akhir' => 2]);
+        LaporanHarian::create(['alat_id' => $alatA->id, 'user_id' => $operatorA->id, 'tanggal' => now()->toDateString(), 'hm_awal' => 1, 'hm_akhir' => 2, 'keterangan' => 'CATATAN-ALPHA']);
+        LaporanHarian::create(['alat_id' => $alatB->id, 'user_id' => $operatorB->id, 'tanggal' => now()->toDateString(), 'hm_awal' => 1, 'hm_akhir' => 2, 'keterangan' => 'CATATAN-BETA']);
 
         $this->actingAs($operatorA)
             ->get(route('laporan.index', ['tab' => 'riwayat']))
             ->assertOk()
-            ->assertSee('Excavator Alpha')
-            ->assertDontSee('Bulldozer Beta');
+            ->assertSee('CATATAN-ALPHA')
+            ->assertDontSee('CATATAN-BETA');
     }
 }

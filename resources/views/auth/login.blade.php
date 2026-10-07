@@ -2,11 +2,12 @@
     $hero = asset('images/aset.webp');
     $lines = ['Catat semua aktivitas', 'arus kas', 'dan posisi alat'];
     $ticker = [
-        'EX-01 CAT 320 — Beroperasi',
-        'EX-02 Komatsu PC200 — Beroperasi',
-        'EX-03 Hitachi ZX200 — Perbaikan',
-        'Kontrak Tol Balikpapan — On Track',
-        'Kas Harian — Tercatat',
+        'Gunakan APD lengkap sebelum bekerja',
+        'Cek kondisi alat sebelum dioperasikan',
+        'Utamakan keselamatan, bukan kecepatan',
+        'Jaga jarak aman dari alat berat yang beroperasi',
+        'Matikan mesin sebelum melakukan perawatan',
+        'Laporkan setiap bahaya ke pengawas',
     ];
 @endphp
 
@@ -16,6 +17,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Masuk — Amerta Valens Avatara</title>
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">

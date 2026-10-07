@@ -35,6 +35,8 @@ class LaporanController extends Controller
 
         $items = $query->latest('tanggal')->latest('id')->get()->map(fn (LaporanHarian $l) => [
             'id' => $l->id,
+            'alat_id' => $l->alat_id,
+            'proyek_id' => $l->proyek_id,
             'alat_kode' => $l->alat?->kode,
             'alat_nama' => $l->alat?->nama,
             'proyek_nama' => $l->proyek?->nama,
@@ -78,6 +80,48 @@ class LaporanController extends Controller
             : route('laporan.index', ['tab' => 'riwayat']);
 
         return redirect($redirect)->with('status', 'Laporan harian terkirim');
+    }
+
+    public function update(LaporanRequest $request, LaporanHarian $laporan): RedirectResponse
+    {
+        $user = $request->user();
+        if (! $user->isBos() && $laporan->user_id !== $user->id) {
+            abort(403);
+        }
+
+        $data = $request->safe()->only(['alat_id', 'proyek_id', 'tanggal', 'hm_awal', 'hm_akhir', 'solar_jerigen', 'keterangan']);
+        $data['solar_jerigen'] = $request->input('solar_jerigen') ?: null;
+
+        foreach (['foto_hm_awal', 'foto_hm_akhir', 'foto_lokasi'] as $field) {
+            if ($request->hasFile($field)) {
+                if ($laporan->{$field}) {
+                    @unlink(public_path($laporan->{$field}));
+                }
+                $data[$field] = $this->simpanFoto($request->file($field));
+            }
+        }
+
+        $laporan->update($data);
+
+        return back()->with('status', 'Laporan diperbarui');
+    }
+
+    public function destroy(Request $request, LaporanHarian $laporan): RedirectResponse
+    {
+        $user = $request->user();
+        if (! $user->isBos() && $laporan->user_id !== $user->id) {
+            abort(403);
+        }
+
+        foreach (['foto_hm_awal', 'foto_hm_akhir', 'foto_lokasi'] as $field) {
+            if ($laporan->{$field}) {
+                @unlink(public_path($laporan->{$field}));
+            }
+        }
+
+        $laporan->delete();
+
+        return back()->with('status', 'Laporan dihapus');
     }
 
     private function simpanFoto(UploadedFile $file): string

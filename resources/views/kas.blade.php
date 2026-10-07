@@ -72,7 +72,7 @@
         @if (count($data['items']) === 0)
             <x-empty-state icon="wallet" title="Belum ada transaksi" sub="Catat kas masuk/keluar pertama dengan tombol Catat Kas." />
         @else
-            <div class="hidden overflow-hidden rounded-3xl ring-1 ring-slate-200 md:block">
+            <div class="hidden overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-slate-100 md:block">
                 <table class="w-full text-sm">
                     <thead class="bg-slate-50 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
                         <tr>
@@ -81,6 +81,7 @@
                             <th class="px-5 py-4">Kontrak</th>
                             <th class="px-5 py-4">Jenis</th>
                             <th class="px-5 py-4 text-right">Nominal</th>
+                            <th class="px-5 py-4 text-right">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -96,6 +97,20 @@
                                 </td>
                                 <td class="font-num px-5 py-4 text-right font-bold {{ $k['jenis'] === 'masuk' ? 'text-emerald-600' : 'text-red-500' }}">
                                     {{ $k['jenis'] === 'masuk' ? '+' : '-' }}{{ Format::rupiah($k['nominal']) }}
+                                </td>
+                                <td class="px-5 py-4">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button type="button" aria-label="Ubah" data-edit-kas='@json($k)'
+                                                class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 text-slate-500 transition hover:border-mandau-blue hover:text-mandau-blue">
+                                            <x-icon name="pencil" class="h-4 w-4" />
+                                        </button>
+                                        <form method="POST" action="{{ route('kas.destroy', $k['id']) }}" onsubmit="return confirm('Hapus transaksi ini?')">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 text-red-500 transition hover:border-red-400">
+                                                <x-icon name="logout" class="h-4 w-4" />
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -115,16 +130,28 @@
                                 {{ $k['jenis'] === 'masuk' ? '+' : '-' }}{{ Format::rupiah($k['nominal']) }}
                             </p>
                         </div>
+                        <div class="mt-3 flex items-center justify-end gap-2 border-t border-slate-100 pt-3">
+                            <button type="button" aria-label="Ubah" data-edit-kas='@json($k)'
+                                    class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 text-slate-500">
+                                <x-icon name="pencil" class="h-4 w-4" />
+                            </button>
+                            <form method="POST" action="{{ route('kas.destroy', $k['id']) }}" onsubmit="return confirm('Hapus transaksi ini?')">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="grid h-9 w-9 place-items-center rounded-full border border-slate-200 text-red-500">
+                                    <x-icon name="logout" class="h-4 w-4" />
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 @endforeach
             </div>
         @endif
 
         {{-- Klasifikasi keuangan --}}
-        <div class="grid gap-4 lg:grid-cols-2">
-            <section>
+        <div class="grid gap-3 sm:gap-4 lg:grid-cols-2">
+            <section class="min-w-0">
                 <h2 class="mb-3 font-display text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">Rekap Bulanan</h2>
-                <div class="overflow-hidden rounded-3xl ring-1 ring-slate-200">
+                <div class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-slate-100">
                     <table class="w-full text-sm">
                         <thead class="bg-slate-50 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
                             <tr><th class="px-5 py-3">Bulan</th><th class="px-5 py-3 text-right">Masuk</th><th class="px-5 py-3 text-right">Keluar</th><th class="px-5 py-3 text-right">Saldo</th></tr>
@@ -144,9 +171,9 @@
                     </table>
                 </div>
             </section>
-            <section>
+            <section class="min-w-0">
                 <h2 class="mb-3 font-display text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">Rekap Tahunan</h2>
-                <div class="overflow-hidden rounded-3xl ring-1 ring-slate-200">
+                <div class="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-slate-100">
                     <table class="w-full text-sm">
                         <thead class="bg-slate-50 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
                             <tr><th class="px-5 py-3">Tahun</th><th class="px-5 py-3 text-right">Masuk</th><th class="px-5 py-3 text-right">Keluar</th><th class="px-5 py-3 text-right">Saldo</th></tr>
@@ -172,9 +199,10 @@
     <div id="kas-modal" class="fixed inset-0 z-60 hidden items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" data-close></div>
         <div class="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-float">
-            <h2 class="font-display text-xl font-extrabold">Catat Transaksi Kas</h2>
+            <h2 id="kas-modal-title" class="font-display text-xl font-extrabold">Catat Transaksi Kas</h2>
             <form method="POST" action="{{ route('kas.store') }}" class="mt-5 space-y-4" id="kas-form">
                 @csrf
+                <input type="hidden" name="_method" id="kas-method" value="POST">
                 <input type="hidden" name="jenis" id="kas-jenis" value="keluar">
                 <div class="space-y-1.5">
                     <span class="text-sm font-bold text-slate-700">Jenis transaksi</span>
@@ -191,7 +219,7 @@
                 </div>
                 <div class="space-y-1.5">
                     <label for="kas-nominal" class="text-sm font-bold text-slate-700">Nominal (Rp)</label>
-                    <input id="kas-nominal" name="nominal" type="number" min="1" step="1000" required placeholder="cth. 1250000"
+                    <input id="kas-nominal" name="nominal" type="number" min="1" step="1" required placeholder="cth. 1250000"
                            class="font-num h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base focus:border-mandau-blue focus:bg-white focus:outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
@@ -230,7 +258,11 @@
     <script>
         (function () {
             var modal = document.getElementById('kas-modal');
+            var form = document.getElementById('kas-form');
+            var method = document.getElementById('kas-method');
             var jenisInput = document.getElementById('kas-jenis');
+            var storeUrl = @json(route('kas.store'));
+            var updateUrl = @json(route('kas.update', ['kas' => 'ID']));
             function paint() {
                 document.querySelectorAll('.kas-jbtn').forEach(function (b) {
                     var on = b.dataset.jenis === jenisInput.value;
@@ -241,14 +273,33 @@
                     p.className = 'text-sm font-extrabold ' + (on ? (masuk ? 'text-emerald-700' : 'text-red-600') : 'text-slate-700');
                 });
             }
-            function open() { document.getElementById('kas-form').reset(); jenisInput.value = 'keluar'; paint(); modal.classList.remove('hidden'); modal.classList.add('flex'); }
+            function open(data) {
+                data = data || {};
+                form.reset();
+                if (data.id) {
+                    document.getElementById('kas-modal-title').textContent = 'Ubah Transaksi Kas';
+                    form.action = updateUrl.replace('ID', data.id); method.value = 'PUT';
+                } else {
+                    document.getElementById('kas-modal-title').textContent = 'Catat Transaksi Kas';
+                    form.action = storeUrl; method.value = 'POST';
+                }
+                jenisInput.value = data.jenis || 'keluar';
+                document.getElementById('kas-nominal').value = data.nominal != null ? data.nominal : '';
+                document.getElementById('kas-tanggal').value = data.tanggal || @json(\App\Support\Format::hariIni());
+                document.getElementById('kas-proyek').value = data.proyek_id || '';
+                document.getElementById('kas-bon').value = data.bon_id || '';
+                document.getElementById('kas-keterangan').value = data.keterangan || '';
+                paint();
+                modal.classList.remove('hidden'); modal.classList.add('flex');
+            }
             function close() { modal.classList.add('hidden'); modal.classList.remove('flex'); }
 
             document.querySelectorAll('.kas-jbtn').forEach(function (b) { b.addEventListener('click', function () { jenisInput.value = b.dataset.jenis; paint(); }); });
-            document.querySelectorAll('[data-open-kas]').forEach(function (b) { b.addEventListener('click', open); });
+            document.querySelectorAll('[data-open-kas]').forEach(function (b) { b.addEventListener('click', function () { open({}); }); });
+            document.querySelectorAll('[data-edit-kas]').forEach(function (b) { b.addEventListener('click', function () { open(JSON.parse(b.dataset.editKas)); }); });
             document.querySelectorAll('[data-close]').forEach(function (b) { b.addEventListener('click', close); });
             paint();
-            @if (request('add')) open(); @endif
+            @if (request('add')) open({}); @endif
         })();
     </script>
 </x-app-layout>

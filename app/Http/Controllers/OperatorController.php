@@ -61,4 +61,15 @@ class OperatorController extends Controller
 
         return redirect()->route('operator.index')->with('status', 'Data operator diperbarui');
     }
+
+    public function destroy(User $user): RedirectResponse
+    {
+        if ($user->laporan()->exists()) {
+            return back()->with('error', 'Operator ini punya laporan. Nonaktifkan saja daripada dihapus.');
+        }
+
+        $user->delete();
+
+        return redirect()->route('operator.index')->with('status', 'Operator dihapus');
+    }
 }

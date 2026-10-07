@@ -56,4 +56,15 @@ class AlatController extends Controller
 
         return back()->with('status', $alat->active ? "{$alat->kode} diaktifkan kembali" : "{$alat->kode} dinonaktifkan");
     }
+
+    public function destroy(Alat $alat): RedirectResponse
+    {
+        if ($alat->laporan()->exists()) {
+            return back()->with('error', 'Alat sudah punya laporan. Nonaktifkan saja daripada dihapus.');
+        }
+
+        $alat->delete();
+
+        return redirect()->route('alat.index')->with('status', 'Alat dihapus');
+    }
 }

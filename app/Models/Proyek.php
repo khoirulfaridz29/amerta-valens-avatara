@@ -25,4 +25,9 @@ class Proyek extends Model
     {
         return $this->hasMany(TransaksiKas::class);
     }
+
+    public function bons(): HasMany
+    {
+        return $this->hasMany(Bon::class);
+    }
 }

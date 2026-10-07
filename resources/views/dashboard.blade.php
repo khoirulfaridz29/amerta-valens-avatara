@@ -123,7 +123,7 @@
 
         {{-- Laporan & Kas terbaru --}}
         <section class="grid gap-4 lg:grid-cols-2">
-            <div>
+            <div class="min-w-0">
                 <h2 class="mb-4 font-display text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">Laporan Terbaru</h2>
                 <div class="flex snap-x gap-3 overflow-x-auto pb-1 no-scrollbar">
                     @forelse ($data['recent_laporan'] as $l)
@@ -147,7 +147,7 @@
                     @endforelse
                 </div>
             </div>
-            <div>
+            <div class="min-w-0">
                 <h2 class="mb-4 font-display text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">Kas Terbaru</h2>
                 <div class="flex snap-x gap-3 overflow-x-auto pb-1 no-scrollbar">
                     @forelse ($data['recent_kas'] as $k)
